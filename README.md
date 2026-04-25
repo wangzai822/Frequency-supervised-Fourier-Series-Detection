@@ -22,6 +22,71 @@
 
 ---
 
+## 📚 Table of Contents
+
+- [🧠 What Problem Does the Paper Solve?](#-what-problem-does-the-paper-solve)
+- [🖼️ Project Preview](#️-project-preview)
+- [📌 What This Repository Provides](#-what-this-repository-provides)
+- [✨ Key Features](#-key-features)
+- [🚧 Why This Viewer Matters](#-why-this-viewer-matters)
+- [🖥️ Interface Highlights](#️-interface-highlights)
+- [🗂️ Project Structure](#️-project-structure)
+- [🏗️ System Architecture](#️-system-architecture)
+- [📦 Requirements](#-requirements)
+- [🚀 Quick Start](#-quick-start)
+- [⌨️ Command-Line Usage](#️-command-line-usage)
+- [🧭 Typical Workflow](#-typical-workflow)
+- [🧪 Data Handling Logic](#-data-handling-logic)
+- [🔌 API Overview](#-api-overview)
+- [🛠️ Technical Highlights](#️-technical-highlights)
+- [🔬 Research Context](#-research-context)
+- [💡 Design Philosophy](#-design-philosophy)
+- [🛣️ Future Directions](#️-future-directions)
+- [📚 Citation](#-citation)
+- [📬 Contact](#-contact)
+- [🙏 Acknowledgement](#-acknowledgement)
+
+---
+
+## 🧠 What Problem Does the Paper Solve?
+
+Bridge defect analysis is usually dominated by two mainstream output forms:
+
+- **bounding boxes**, which are efficient but too coarse for irregular defects, and
+- **raster masks**, which capture boundaries better but are storage-heavy and inconvenient for compact engineering archives.
+
+For bridge inspection and lifecycle maintenance, this creates a fundamental mismatch:
+
+> visual models may detect damage successfully,  
+> but their outputs are often **not ideal as reusable engineering records**.
+
+In real infrastructure workflows, defect results should not only be visible on screen. They should also support:
+
+- **compact storage**
+- **structured archival**
+- **geometry-aware measurement**
+- **efficient recovery**
+- **future querying and lifecycle reuse**
+
+To address this problem, the FS-FSD paper proposes a **contour-native framework** called  
+**Frequency-Supervised Fourier Series Detection (FS-FSD)**.
+
+Instead of storing a defect only as a box or a dense mask, FS-FSD models each defect as a **closed contour represented by compact Fourier coefficients**. This makes the prediction not only a visual result, but also a **lightweight, reconstructable, and reusable geometric record**.
+
+In short, the paper aims to move bridge defect analysis:
+
+- from **box-native outputs**
+- and **mask-native outputs**
+
+toward:
+
+- **compact contour-native representations**
+- **better polygon-space geometric fidelity**
+- **lighter archive footprint**
+- **more practical downstream engineering reuse**
+
+---
+
 ## 🖼️ Project Preview
 
 <p align="center">
@@ -30,75 +95,29 @@
 
 <p align="center">
   <em>
-    Interactive inspection interface of the FS-FSD WebGL Damage Intelligence Viewer, showing
-    image browsing, WebGL-rendered defect contours, defect records, and Fourier coefficient analysis.
+    Interactive inspection interface of the FS-FSD WebGL Damage Intelligence Viewer,
+    showing image browsing, WebGL-rendered defect contours, defect records,
+    and Fourier coefficient analysis.
   </em>
 </p>
 
 ---
 
-## 📌 Overview
+## 📌 What This Repository Provides
 
-**FS-FSD WebGL Damage Intelligence Viewer** is a lightweight local visualization system for exploring **Fourier-based structural damage archives** stored in **SQLite** databases.
+This repository provides a **local WebGL-based archive viewer** for exploring FS-FSD-style defect records stored in **SQLite** databases.
 
-Unlike conventional viewers that focus only on bounding boxes or raster masks, this project is designed around **contour-native defect records**. It enables users to:
+The viewer is designed as a practical demonstration of the contour-native idea proposed in the paper.  
+It allows users to:
 
-- load an archived FS-FSD-style SQLite database,
-- link it with a local image repository,
-- reconstruct defect polygons from Fourier descriptors,
-- inspect geometric properties interactively,
-- and visualize archived damage intelligence in a clean WebGL-based interface.
+- open archived defect databases,
+- connect them to a local image repository,
+- reconstruct polygons from stored Fourier descriptors,
+- browse image-level damage records,
+- inspect defect geometry interactively,
+- and visualize compact archived damage intelligence through a clean English interface.
 
-The system is intended as a **research/demo-grade visualization layer** for the broader **Frequency-Supervised Fourier Series Detection (FS-FSD)** framework.
-
----
-
-## 📖 Paper in Brief
-
-This viewer is built around the ideas proposed in our research on **Fourier-based arbitrary-shape bridge defect analysis**.
-
-### 🧠 What the paper mainly does
-
-The core goal of the paper is to rethink how bridge defects should be represented in intelligent inspection systems.
-
-Instead of describing defects as:
-
-- **bounding boxes**, which are too coarse for irregular damage regions, or
-- **dense raster masks**, which are storage-heavy and not ideal for compact engineering archives,
-
-the paper proposes a **contour-native framework** called **FS-FSD**  
-(**Frequency-Supervised Fourier Series Detection**).
-
-In this framework:
-
-- each defect is modeled as a **closed contour**,
-- the contour is represented by a **compact Fourier coefficient vector**,
-- defects can be **reconstructed**, **stored**, **queried**, and **visualized** as structured engineering objects,
-- and heterogeneous outputs can be compared fairly under a **unified polygon-space evaluation protocol**.
-
-### 🎯 Why this matters
-
-For bridge inspection and infrastructure management, the final objective is not only to detect where a defect appears in an image.  
-It is also to generate a representation that can support:
-
-- geometric measurement,
-- structured archiving,
-- compact storage,
-- future retrieval,
-- and lifecycle maintenance workflows.
-
-FS-FSD therefore treats a defect as a **compact, reusable geometric record**, rather than only a visual prediction.
-
-### 🧩 How this viewer fits in
-
-This viewer acts as the **interactive archive visualization layer** of that idea.
-
-It demonstrates how Fourier-based defect records can be:
-
-- loaded from SQLite archives,
-- matched to local inspection images,
-- reconstructed into polygons,
-- and reviewed through an engineering-friendly WebGL interface.
+This project is therefore not just a frontend demo. It is a **research-oriented archive inspection tool** for validating how Fourier-based defect records can be loaded, reconstructed, reviewed, and reused in practice.
 
 ---
 
@@ -107,7 +126,7 @@ It demonstrates how Fourier-based defect records can be:
 ### 🧠 1. Schema-Adaptive SQLite Loading
 - Automatically inspects SQLite schema
 - Detects image, defect, and label tables from flexible database layouts
-- Supports non-standard archive names beyond fixed table conventions
+- Supports non-standard archive structures beyond fixed table conventions
 
 ### 📐 2. Fourier-Aware Defect Reconstruction
 - Decodes Fourier coefficients from:
@@ -115,17 +134,17 @@ It demonstrates how Fourier-based defect records can be:
   - JSON strings
   - numeric arrays
 - Reconstructs defect polygons from archived coefficients
-- Supports fallback reconstruction when full project geometry utilities are unavailable
+- Supports fallback reconstruction when a full geometry backend is unavailable
 
 ### 🖼️ 3. Folder-Driven Image Browsing
 - If an image repository folder is selected, the viewer uses that folder as the **visible image source**
 - Database defect records are matched onto selected local files
-- Images without matched defects are still displayed as browseable records
+- Images without matched defects are still displayed in the browser
 
 ### ⚡ 4. Native WebGL Frontend
 - Native WebGL rendering for image overlays and polygon display
-- Smooth interactive browsing in the browser
-- Scientific-style color palette and research-demo oriented layout
+- Smooth browser-side interaction
+- Scientific-style interface suitable for paper demos and research presentations
 
 ### 🔍 5. Interactive Defect Inspection
 - Browse image-level defect records
@@ -137,32 +156,28 @@ It demonstrates how Fourier-based defect records can be:
   - elongation
 - Review Fourier coefficient spectrum for selected defects
 
-### 🧩 6. Clean Local Deployment
+### 🧩 6. Lightweight Local Deployment
 - Fast local startup through FastAPI + Uvicorn
 - No external database service required
 - Suitable for offline experiments, archive validation, and engineering demonstrations
 
 ---
 
-## 🚧 Why This Project Exists
+## 🚧 Why This Viewer Matters
 
-Bridge defect analysis is often reduced to **bounding boxes** or **dense raster masks**, which are not ideal when the final goal is:
+The viewer exists to demonstrate a different way of thinking about defect results:
 
-- engineering archival,
-- compact storage,
-- geometry-aware querying,
-- and long-term defect reuse across maintenance workflows.
+> a defect is not only something to detect,  
+> but also something to **store, reconstruct, inspect, and reuse**.
 
-This project supports a different paradigm:
-
-> **Defects as compact, reconstructable contour records rather than only screen-space detection outputs.**
-
-In this system, a defect becomes a reusable geometric object that can be:
+In this project, a defect becomes a compact geometric object that can be:
 
 - archived efficiently,
 - reconstructed on demand,
 - rendered interactively,
-- and inspected as a structured engineering record.
+- and reviewed as a structured engineering record.
+
+This is exactly where the viewer connects to the core motivation of the FS-FSD paper.
 
 ---
 
@@ -200,6 +215,8 @@ FS-FSD/
     ├── images/
     │   ├── ...
     │   └── ...
+    ├── demo/
+    │   └── demo.png
     └── static/
         ├── app.js
         ├── index.html
@@ -267,16 +284,6 @@ SQLite Archive + Image Repository
 ```bash
 pip install fastapi uvicorn numpy
 ```
-
-### 🔗 Optional Integration
-
-If your broader project already provides:
-
-- `fsd_geometry.py`
-- existing database utilities
-- related archive-generation code
-
-the viewer can integrate with them automatically when available.
 
 ---
 
@@ -352,6 +359,19 @@ Do not open browser automatically:
 ```bash
 python run_webgl_viewer.py --no-browser
 ```
+
+### Available Options
+
+| Option | Description |
+|---|---|
+| `--host` | Server host, default: `127.0.0.1` |
+| `--port` | Server port, default: `8000` |
+| `--app` | ASGI app import path |
+| `--reload` | Enable Uvicorn auto-reload |
+| `--auto-port` | Automatically use the next free port if occupied |
+| `--no-browser` | Disable automatic browser opening |
+| `--browser-delay` | Delay before opening browser |
+| `--log-level` | Uvicorn log level |
 
 ---
 
@@ -511,21 +531,13 @@ If this project supports your research or engineering workflow, please consider 
 ```bibtex
 @article{liu2026fsfsd,
   title={Contour-Native Bridge Defect Analysis and Compact Archiving via Frequency-Supervised Fourier Series},
-  author={Liu, Jin and Wang, Wang and Pu, Hongxu and Cao, Zhen and Wang, Yasong and Wang, Hu and Qi, Xiaojuan},
+  author={Jin Liu and Wang Wang and Hongxu Pu and Zhen Cao and Yasong Wang and Hu Wang and Xiaojuan Qi},
   journal={Preprint submitted to Elsevier},
   year={2026}
 }
 ```
 
 > Citation details can be updated after formal publication.
-
----
-
-## 📝 Notes
-
-- This repository is focused on **local archive visualization**, not cloud deployment.
-- The frontend is intentionally fully **English** for professional demo and paper presentation usage.
-- If your project already includes a geometry backend such as `fsd_geometry.py`, the viewer will attempt to use it automatically when available.
 
 ---
 

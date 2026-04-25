@@ -25,7 +25,7 @@
 ## 🖼️ Project Preview
 
 <p align="center">
-  <img src="demo/demo.png" width="1000" alt="FS-FSD WebGL Damage Intelligence Viewer Preview">
+  <img src="webgl_viewer/demo/demo.png" width="1000" alt="FS-FSD WebGL Damage Intelligence Viewer Preview">
 </p>
 
 <p align="center">

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>FS-FSD WebGL Damage Intelligence Viewer</title>
+
+  <link
+    rel="stylesheet"
+    href="/static/style.css?v=0.6.0-native-webgl"
+  />
+</head>
+
+<body>
+  <div id="toastContainer" class="toast-container"></div>
+
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="brand-block">
+        <div class="brand-icon">FS</div>
+
+        <div>
+          <h1>FS-FSD WebGL Damage Intelligence Viewer</h1>
+          <p>Fourier structural damage archive viewer</p>
+        </div>
+      </div>
+
+      <div class="server-status-wrap">
+        <span class="server-status-label">Server</span>
+        <span id="serverStatus" class="server-status">Checking</span>
+      </div>
+    </header>
+
+    <section class="setup-panel panel">
+      <div class="setup-field db-field">
+        <label for="dbPathInput">SQLite Database</label>
+
+        <div class="input-button-row">
+          <input
+            id="dbPathInput"
+            type="text"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="Select FS-FSD SQLite database..."
+          />
+
+          <button id="selectDbBtn" type="button" class="button secondary">
+            Browse DB
+          </button>
+        </div>
+      </div>
+
+      <div class="setup-field image-root-field">
+        <label for="imageRootInput">Image Repository</label>
+
+        <div class="input-button-row">
+          <input
+            id="imageRootInput"
+            type="text"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="Select image repository folder..."
+          />
+
+          <button id="selectFolderBtn" type="button" class="button secondary">
+            Browse Folder
+          </button>
+        </div>
+      </div>
+
+      <div class="setup-actions">
+        <button id="initializeBtn" type="button" class="button primary">
+          Initialize
+        </button>
+
+        <button id="refreshImagesBtn" type="button" class="button secondary">
+          Refresh Images
+        </button>
+      </div>
+
+      <div id="sessionMessage" class="session-message">
+        Ready. Select a database and image repository.
+      </div>
+    </section>
+
+    <section class="summary-grid">
+      <article class="summary-card panel">
+        <span>Images</span>
+        <strong id="summaryImages">--</strong>
+      </article>
+
+      <article class="summary-card panel">
+        <span>Defects</span>
+        <strong id="summaryDefects">--</strong>
+      </article>
+
+      <article class="summary-card panel">
+        <span>Classes</span>
+        <strong id="summaryClasses">--</strong>
+      </article>
+
+      <article class="summary-card panel">
+        <span>Found</span>
+        <strong id="summaryFound">--</strong>
+      </article>
+
+      <article class="summary-card panel">
+        <span>Missing</span>
+        <strong id="summaryMissing">--</strong>
+      </article>
+
+      <article class="summary-card panel">
+        <span>DB Size</span>
+        <strong id="summaryDbSize">--</strong>
+      </article>
+    </section>
+
+    <main class="main-layout">
+      <aside class="images-panel panel">
+        <div class="panel-header">
+          <div>
+            <h2>Images</h2>
+            <p id="imageCountText">0 / 0</p>
+          </div>
+        </div>
+
+        <div class="filter-block">
+          <input
+            id="searchInput"
+            type="search"
+            autocomplete="off"
+            placeholder="Search image name, id, path..."
+          />
+
+          <label class="check-row">
+            <input
+              id="existingOnlyInput"
+              type="checkbox"
+            />
+
+            <span>Existing files only</span>
+          </label>
+        </div>
+
+        <div id="imageList" class="image-list">
+          <div class="empty-state">No images loaded.</div>
+        </div>
+      </aside>
+
+      <section class="viewer-panel panel">
+        <div class="viewer-toolbar">
+          <div>
+            <h2>Viewer</h2>
+            <p>Image preview with WebGL-rendered Fourier polygon outlines</p>
+          </div>
+
+          <div class="viewer-controls">
+            <label>
+              <span>Polygon Points</span>
+
+              <input
+                id="polygonPointsInput"
+                type="number"
+                min="16"
+                max="2048"
+                step="8"
+                value="256"
+              />
+            </label>
+
+            <label class="opacity-control">
+              <span>Opacity</span>
+
+              <input
+                id="opacityInput"
+                type="number"
+                min="0"
+                max="1"
+                step="0.05"
+                value="0"
+                disabled
+              />
+            </label>
+
+            <label>
+              <span>Line</span>
+
+              <input
+                id="lineWidthInput"
+                type="number"
+                min="0.75"
+                max="8"
+                step="0.25"
+                value="2.25"
+              />
+            </label>
+
+            <label>
+              <span>Fit</span>
+
+              <select id="fitModeSelect">
+                <option value="contain" selected>Contain</option>
+                <option value="cover">Cover</option>
+                <option value="original">Original</option>
+              </select>
+            </label>
+
+            <label class="check-control">
+              <input
+                id="showLabelsInput"
+                type="checkbox"
+                checked
+              />
+
+              <span>Labels</span>
+            </label>
+
+            <label class="check-control">
+              <input
+                id="showVerticesInput"
+                type="checkbox"
+              />
+
+              <span>Vertices</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="canvas-wrap">
+          <canvas
+            id="viewerCanvas"
+            width="1400"
+            height="900"
+          ></canvas>
+
+          <div
+            id="viewerLabelLayer"
+            class="viewer-label-layer"
+            aria-hidden="true"
+          ></div>
+
+          <div
+            id="viewerPlaceholder"
+            class="viewer-placeholder is-visible"
+          >
+            Select and initialize an archive
+          </div>
+        </div>
+      </section>
+
+      <aside class="details-panel panel">
+        <div class="panel-header">
+          <div>
+            <h2>Current Image</h2>
+            <p>Selected image and annotation details</p>
+          </div>
+        </div>
+
+        <dl class="details-grid">
+          <dt>Name</dt>
+          <dd id="currentImageName">--</dd>
+
+          <dt>Path</dt>
+          <dd id="currentImagePath" class="mono break-text">--</dd>
+
+          <dt>Size</dt>
+          <dd id="currentImageSize">--</dd>
+
+          <dt>Status</dt>
+          <dd id="currentImageStatus">--</dd>
+
+          <dt>Records</dt>
+          <dd id="currentRecordCount">--</dd>
+        </dl>
+
+        <div class="records-section">
+          <div class="panel-header small">
+            <div>
+              <h3>Damage Records</h3>
+              <p>Click a row or polygon to highlight outline</p>
+            </div>
+          </div>
+
+          <div class="records-table-wrap">
+            <table class="records-table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>#</th>
+                  <th>Class</th>
+                  <th>Score</th>
+                  <th>Area</th>
+                  <th>Perim.</th>
+                  <th>Pts</th>
+                </tr>
+              </thead>
+
+              <tbody id="recordsTableBody">
+                <tr>
+                  <td colspan="7" class="empty-cell">
+                    No records for current image.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <section id="selectedDefectSection" class="selected-defect-section is-empty">
+          <div class="selected-defect-header">
+            <div>
+              <h3>Selected Defect Preview</h3>
+              <p>Outline polygon and Fourier descriptor information</p>
+            </div>
+
+            <span id="selectedDefectBadge" class="selected-defect-badge">
+              None
+            </span>
+          </div>
+
+          <div class="defect-preview-card">
+            <div class="defect-preview-title-row">
+              <span class="defect-color-dot"></span>
+
+              <div class="defect-preview-title-text">
+                <strong id="selectedDefectTitle">No defect selected</strong>
+                <span id="selectedDefectSubtitle">
+                  Click a damage record or polygon to inspect details.
+                </span>
+              </div>
+            </div>
+
+            <div class="coeff-range-row">
+              <span>LOW</span>
+              <div class="coeff-range-bar"></div>
+              <span>HIGH</span>
+            </div>
+
+            <div class="coeff-sign-row">
+              <span>NEGATIVE / SMALL</span>
+              <span>POSITIVE / LARGE</span>
+            </div>
+
+            <div class="coeff-canvas-wrap">
+              <canvas
+                id="coeffSpectrumCanvas"
+                width="640"
+                height="220"
+              ></canvas>
+
+              <div
+                id="coeffSpectrumOverlay"
+                class="coeff-spectrum-overlay"
+              >
+                No coefficient data
+              </div>
+            </div>
+
+            <div class="coeff-readout-grid">
+              <div class="coeff-readout-card">
+                <span id="coeffHint">
+                  Move mouse over bars to inspect coefficient index and value.
+                </span>
+              </div>
+
+              <div class="coeff-readout-card strong">
+                <span id="coeffIndexText">Coefficient --</span>
+                <strong id="coeffValueText">--</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="defect-metric-grid">
+            <div class="defect-metric">
+              <span>Class</span>
+              <strong id="selectedDefectClass">--</strong>
+            </div>
+
+            <div class="defect-metric">
+              <span>Score</span>
+              <strong id="selectedDefectScore">--</strong>
+            </div>
+
+            <div class="defect-metric">
+              <span>Area</span>
+              <strong id="selectedDefectArea">--</strong>
+            </div>
+
+            <div class="defect-metric">
+              <span>Perimeter</span>
+              <strong id="selectedDefectPerimeter">--</strong>
+            </div>
+
+            <div class="defect-metric">
+              <span>Orientation</span>
+              <strong id="selectedDefectOrientation">--</strong>
+            </div>
+
+            <div class="defect-metric">
+              <span>Elongation</span>
+              <strong id="selectedDefectElongation">--</strong>
+            </div>
+          </div>
+
+          <div class="defect-meta-card">
+            <div>
+              <span>Defect ID</span>
+              <strong id="selectedDefectId">--</strong>
+            </div>
+
+            <div>
+              <span>Image</span>
+              <strong id="selectedDefectImage">--</strong>
+            </div>
+
+            <div>
+              <span>Class ID</span>
+              <strong id="selectedDefectClassId">--</strong>
+            </div>
+
+            <div>
+              <span>Codec</span>
+              <strong id="selectedDefectCodec">--</strong>
+            </div>
+
+            <div>
+              <span>Coeff Column</span>
+              <strong id="selectedDefectCoeffColumn">--</strong>
+            </div>
+
+            <div>
+              <span>Coefficient Count</span>
+              <strong id="selectedDefectCoeffCount">--</strong>
+            </div>
+          </div>
+        </section>
+
+        <div class="runtime-section">
+          <div class="panel-header small">
+            <div>
+              <h3>Runtime Log</h3>
+              <p>API requests and errors</p>
+            </div>
+          </div>
+
+          <div id="runtimeLog" class="runtime-log"></div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script
+    src="/static/app.js?v=0.6.0-native-webgl"
+    defer
+  ></script>
+</body>
+</html>

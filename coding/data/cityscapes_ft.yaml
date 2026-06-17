@@ -1,0 +1,32 @@
+# Train/val/test sets as 1) dir: path/to/imgs, 2) file: path/to/imgs.txt, or 3) list: [path/to/imgs1, path/to/imgs2, ..]
+#path: /media/liu/088d8f6e-fca3-4aed-871f-243ad962413b/datas/cityscapes  #4090
+#path: /media/liu/f4854541-32b0-4d00-84a6-13d3a5dd30f2/datas/cityscapes  #4090-2
+# path: /data/datas/cityscapes  #4090x2 svr
+#path: /media/liu/a2254a68-9f90-4b44-ab2a-ffc55b361238/datas/cityscapes  #zh3090
+#path: /sgg/liujin/data/cityscapes  #A100 59.172.178.17 33392
+path: /data/liujin/workspace/datas/cityscapes  #A100 10.255.255.1
+#path: /media/data4T/datas/cityscapes #709-4090
+# path: /media/liu/124CDDC24CDDA0B1/datas/cityscapes  #3060
+#path: E:/datas/cityscapes  #fy3090,CatBug
+
+train: train/images  # train images (relative to 'path') 118287 images
+# train: val/images  # train images (relative to 'path') 118287 images
+val: val/images  # val images (relative to 'path') 5000 images
+#train: train2017.txt  # train images (relative to 'path') 118287 images
+#val: val2017.txt  # val images (relative to 'path') 5000 images
+# test: test-dev2017.txt  # 20288 of 40670 images, submit to https://competitions.codalab.org/competitions/20794
+
+# Classes
+nc: 7  # number of classes
+# names: ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
+#         'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
+#         'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
+#         'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard',
+#         'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
+#         'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch',
+#         'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone',
+#         'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear',
+#         'hair drier', 'toothbrush']  # class names
+ft_coef: 10
+val_epoch: 0
+

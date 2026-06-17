@@ -1,0 +1,16 @@
+path:  /data4T/datas/construct2895
+
+train: images  # train images (relative to 'path') 128 images
+# val: images  # train images (relative to 'path') 128 images
+val:  val.txt # val images (relative to 'path') 128 images
+# test: val.txt # test images (optional)l
+
+# Classes
+nc: 8  # number of classes
+# names: ['1', '2', '3', '4', 'human body', 'ball', 'circle cage', 'square cage', 'tyre', 'metal bucket',
+#         'cube', 'cylinder', 'plane', 'rov']  # class names
+
+ft_coef: 16
+val_epoch: 5
+val_epoch_T: 5
+val_count: 500
